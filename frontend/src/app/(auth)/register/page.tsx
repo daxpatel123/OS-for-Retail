@@ -34,7 +34,8 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data: RegisterFormData) => {
-    const { confirmPassword: _, ...payload } = data;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword: _cp, ...payload } = data;
     await registerMutation.mutateAsync(payload);
   };
 
