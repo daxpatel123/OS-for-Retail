@@ -60,7 +60,7 @@ class Alert(BaseModel):
     )
     title: Mapped[str] = mapped_column(String(500), nullable=False)
     message: Mapped[str] = mapped_column(Text, nullable=False)
-    metadata: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    alert_metadata: Mapped[Optional[dict]] = mapped_column("metadata", JSONB, nullable=True)
     status: Mapped[AlertStatus] = mapped_column(
         Enum(AlertStatus, name="alert_status_enum"),
         nullable=False,
