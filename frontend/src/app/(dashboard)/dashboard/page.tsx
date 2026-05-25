@@ -15,7 +15,7 @@ import {
   useDashboardAlerts,
 } from "@/hooks/useDashboard";
 import { useAppStore } from "@/store/appStore";
-import { formatCurrency, formatPercent } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 
 // Mock summary data for when API isn't available
 const MOCK_SUMMARY = {

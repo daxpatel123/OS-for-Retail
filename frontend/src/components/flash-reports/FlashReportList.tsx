@@ -2,7 +2,7 @@
 
 import { ChevronRight, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { formatCurrency, formatDate, formatPercent } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import type { FlashReport } from "@/types";
 
 const MOCK_REPORTS: FlashReport[] = [
