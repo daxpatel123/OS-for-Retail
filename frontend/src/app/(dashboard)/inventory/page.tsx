@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Package, ShoppingCart, Archive, Download } from "lucide-react";
 import { InventoryTable } from "@/components/inventory/InventoryTable";
 import { ReorderRecommendations } from "@/components/inventory/ReorderRecommendations";

@@ -23,7 +23,7 @@ interface FuelGradeData {
   retailPrice: number;
   costPrice: number;
   gallonsSoldToday: number;
-  revenueTodAy: number;
+  revenueToday: number;
   priceChange: number;
 }
 
@@ -37,7 +37,7 @@ const FUEL_DATA: FuelGradeData[] = [
     retailPrice: 3.499,
     costPrice: 3.21,
     gallonsSoldToday: 1842,
-    revenueTodAy: 6445.36,
+    revenueToday: 6445.36,
     priceChange: -0.05,
   },
   {
@@ -49,7 +49,7 @@ const FUEL_DATA: FuelGradeData[] = [
     retailPrice: 3.799,
     costPrice: 3.49,
     gallonsSoldToday: 482,
-    revenueTodAy: 1831.22,
+    revenueToday: 1831.22,
     priceChange: 0.0,
   },
   {
@@ -61,7 +61,7 @@ const FUEL_DATA: FuelGradeData[] = [
     retailPrice: 4.099,
     costPrice: 3.78,
     gallonsSoldToday: 628,
-    revenueTodAy: 2574.17,
+    revenueToday: 2574.17,
     priceChange: 0.1,
   },
   {
@@ -73,7 +73,7 @@ const FUEL_DATA: FuelGradeData[] = [
     retailPrice: 3.899,
     costPrice: 3.58,
     gallonsSoldToday: 980,
-    revenueTodAy: 3821.02,
+    revenueToday: 3821.02,
     priceChange: -0.03,
   },
 ];
@@ -145,7 +145,7 @@ function TankGauge({
 
 export function FuelDashboard() {
   const totalGallons = FUEL_DATA.reduce((s, f) => s + f.gallonsSoldToday, 0);
-  const totalRevenue = FUEL_DATA.reduce((s, f) => s + f.revenueTodAy, 0);
+  const totalRevenue = FUEL_DATA.reduce((s, f) => s + f.revenueToday, 0);
   const avgMargin =
     FUEL_DATA.reduce(
       (s, f) => s + ((f.retailPrice - f.costPrice) / f.retailPrice) * 100,
@@ -403,7 +403,7 @@ export function FuelDashboard() {
                     {formatGallons(fuel.gallonsSoldToday)}
                   </td>
                   <td className="py-3 px-5 text-right tabular-nums font-medium text-slate-800">
-                    {formatCurrency(fuel.revenueTodAy)}
+                    {formatCurrency(fuel.revenueToday)}
                   </td>
                   <td className="py-3 px-5 text-right tabular-nums text-slate-600">
                     ${fuel.retailPrice.toFixed(3)}
