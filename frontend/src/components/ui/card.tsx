@@ -1,7 +1,8 @@
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface CardProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }
 
@@ -9,7 +10,7 @@ export function Card({ children, className }: CardProps) {
   return (
     <div
       className={cn(
-        "bg-white rounded-xl border border-slate-100 shadow-sm",
+        "bg-white rounded-xl border border-slate-200 shadow-sm",
         className
       )}
     >
@@ -20,18 +21,20 @@ export function Card({ children, className }: CardProps) {
 
 export function CardHeader({ children, className }: CardProps) {
   return (
-    <div className={cn("px-5 pt-5 pb-3", className)}>{children}</div>
+    <div className={cn("px-6 py-4 border-b border-slate-100", className)}>
+      {children}
+    </div>
   );
 }
 
 export function CardTitle({ children, className }: CardProps) {
   return (
-    <h3 className={cn("text-sm font-semibold text-slate-900", className)}>
+    <h3 className={cn("text-base font-semibold text-slate-900", className)}>
       {children}
     </h3>
   );
 }
 
 export function CardContent({ children, className }: CardProps) {
-  return <div className={cn("px-5 pb-5", className)}>{children}</div>;
+  return <div className={cn("px-6 py-4", className)}>{children}</div>;
 }

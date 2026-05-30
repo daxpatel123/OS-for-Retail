@@ -1,41 +1,22 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { User } from "@/types";
-import { clearTokens } from "@/lib/auth";
 
 interface AuthState {
   user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-
-  setUser: (user: User) => void;
+  token: string | null;
+  setAuth: (user: User, token: string) => void;
   clearAuth: () => void;
-  setLoading: (loading: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      isAuthenticated: false,
-      isLoading: false,
-
-      setUser: (user) =>
-        set({ user, isAuthenticated: true }),
-
-      clearAuth: () => {
-        clearTokens();
-        set({ user: null, isAuthenticated: false });
-      },
-
-      setLoading: (isLoading) => set({ isLoading }),
+      token: null,
+      setAuth: (user, token) => set({ user, token }),
+      clearAuth: () => set({ user: null, token: null }),
     }),
-    {
-      name: "retailos-auth",
-      partialize: (state) => ({
-        user: state.user,
-        isAuthenticated: state.isAuthenticated,
-      }),
-    }
+    { name: "retailos-auth" }
   )
 );

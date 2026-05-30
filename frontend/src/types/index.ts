@@ -1,374 +1,261 @@
-// ─── Organization & User Types ───────────────────────────────────────────────
-
-export type UserRole = "OWNER" | "MANAGER" | "EMPLOYEE" | "ACCOUNTANT";
-
 export interface Organization {
   id: string;
   name: string;
-  createdAt: string;
-  updatedAt: string;
+  slug: string;
+  subscriptionPlan: string;
+  isActive: boolean;
 }
 
 export interface Store {
   id: string;
-  organizationId: string;
+  orgId: string;
   name: string;
   address: string;
   city: string;
   state: string;
   zip: string;
-  phone?: string;
+  phone: string;
   timezone: string;
-  createdAt: string;
-  updatedAt: string;
+  posType: string;
+  isActive: boolean;
 }
+
+export type UserRole = "OWNER" | "MANAGER" | "EMPLOYEE" | "ACCOUNTANT";
 
 export interface User {
   id: string;
-  organizationId: string;
+  orgId: string;
   email: string;
   firstName: string;
   lastName: string;
   role: UserRole;
-  storeIds: string[];
-  createdAt: string;
-  updatedAt: string;
+  isActive: boolean;
 }
-
-// ─── Product & Inventory Types ────────────────────────────────────────────────
 
 export interface ProductCategory {
   id: string;
   name: string;
   parentId?: string;
-  color?: string;
+  marginTargetPct?: number;
 }
 
 export interface Vendor {
   id: string;
-  organizationId: string;
   name: string;
   contactName?: string;
   email?: string;
   phone?: string;
   accountNumber?: string;
+  isActive: boolean;
 }
 
 export interface Product {
   id: string;
-  organizationId: string;
-  upc: string;
+  upc?: string;
+  plu?: string;
   name: string;
-  description?: string;
-  categoryId: string;
-  category?: ProductCategory;
+  categoryId?: string;
   vendorId?: string;
-  vendor?: Vendor;
-  costPrice: number;
+  cost: number;
   retailPrice: number;
-  taxRate: number;
+  unitOfMeasure: string;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  reorderPoint?: number;
+  reorderQuantity?: number;
+  minStock?: number;
+  maxStock?: number;
 }
-
-export type StockStatus = "IN_STOCK" | "LOW_STOCK" | "OUT_OF_STOCK" | "DEAD_STOCK";
 
 export interface Inventory {
   id: string;
   storeId: string;
   productId: string;
-  product?: Product;
+  product: Product;
   quantityOnHand: number;
-  reorderPoint: number;
-  reorderQuantity: number;
-  daysOfSupply: number;
-  lastReceivedAt?: string;
-  lastSoldAt?: string;
-  status: StockStatus;
-  updatedAt: string;
+  lastCountedAt?: string;
+  lastUpdatedAt: string;
+}
+
+export type StockStatus =
+  | "IN_STOCK"
+  | "LOW_STOCK"
+  | "OUT_OF_STOCK"
+  | "DEAD_STOCK";
+
+export interface StockAlert {
+  id: string;
+  storeId: string;
+  productId: string;
+  product: Product;
+  alertType: "LOW_STOCK" | "OUT_OF_STOCK" | "OVERSTOCK" | "DEAD_STOCK";
+  status: "OPEN" | "ACKNOWLEDGED" | "RESOLVED";
+  triggeredAt: string;
 }
 
 export interface InventoryMovement {
   id: string;
   storeId: string;
   productId: string;
-  product?: Product;
   movementType: "SALE" | "RECEIPT" | "ADJUSTMENT" | "TRANSFER" | "WASTE";
   quantity: number;
-  referenceId?: string;
   notes?: string;
-  createdBy: string;
   createdAt: string;
 }
-
-export interface StockAlert {
-  id: string;
-  storeId: string;
-  productId: string;
-  product?: Product;
-  alertType: "LOW_STOCK" | "OUT_OF_STOCK" | "REORDER_NEEDED";
-  currentQuantity: number;
-  reorderPoint: number;
-  isResolved: boolean;
-  createdAt: string;
-  resolvedAt?: string;
-}
-
-// ─── Transaction Types ────────────────────────────────────────────────────────
-
-export interface TransactionLineItem {
-  id: string;
-  transactionId: string;
-  productId: string;
-  product?: Product;
-  quantity: number;
-  unitPrice: number;
-  discount: number;
-  taxAmount: number;
-  totalAmount: number;
-}
-
-export interface Shift {
-  id: string;
-  storeId: string;
-  employeeId: string;
-  startTime: string;
-  endTime?: string;
-  openingCash: number;
-  closingCash?: number;
-}
-
-export interface Transaction {
-  id: string;
-  storeId: string;
-  shiftId?: string;
-  shift?: Shift;
-  transactionType: "SALE" | "REFUND" | "VOID";
-  paymentMethod: "CASH" | "CREDIT" | "DEBIT" | "EBT" | "MIXED";
-  subtotal: number;
-  taxAmount: number;
-  discountAmount: number;
-  totalAmount: number;
-  lineItems: TransactionLineItem[];
-  createdAt: string;
-}
-
-// ─── Fuel Types ───────────────────────────────────────────────────────────────
-
-export type FuelGrade = "REGULAR" | "MIDGRADE" | "PREMIUM" | "DIESEL" | "E85";
-
-export interface FuelSale {
-  id: string;
-  storeId: string;
-  grade: FuelGrade;
-  gallons: number;
-  pricePerGallon: number;
-  totalAmount: number;
-  pumpNumber: number;
-  paymentMethod: "CASH" | "CREDIT" | "DEBIT" | "FLEET";
-  saleDate: string;
-}
-
-export interface FuelPrice {
-  id: string;
-  storeId: string;
-  grade: FuelGrade;
-  retailPrice: number;
-  costPrice: number;
-  effectiveDate: string;
-}
-
-export interface FuelInventory {
-  id: string;
-  storeId: string;
-  grade: FuelGrade;
-  tankCapacity: number;
-  currentVolume: number;
-  lastDeliveryDate?: string;
-  lastDeliveryVolume?: number;
-}
-
-// ─── Invoice Types ────────────────────────────────────────────────────────────
 
 export type InvoiceStatus =
   | "PENDING"
-  | "PROCESSING"
-  | "EXTRACTED"
-  | "REVIEWED"
+  | "MATCHED"
+  | "DISCREPANCY"
   | "APPROVED"
-  | "POSTED"
-  | "ERROR";
+  | "PAID";
+
+export type OcrStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED";
 
 export interface InvoiceLineItem {
   id: string;
   invoiceId: string;
-  upc?: string;
-  productId?: string;
-  product?: Product;
-  description: string;
-  quantity: number;
+  productNameRaw: string;
+  upcRaw?: string;
+  quantityOrdered: number;
+  quantityDelivered: number;
   unitCost: number;
-  totalCost: number;
-  matched: boolean;
+  lineTotal: number;
+  matchConfidence?: number;
+  hasDiscrepancy: boolean;
+  discrepancyNotes?: string;
 }
 
 export interface Invoice {
   id: string;
   storeId: string;
   vendorId?: string;
-  vendor?: Vendor;
   invoiceNumber?: string;
   invoiceDate?: string;
   dueDate?: string;
+  ocrStatus: OcrStatus;
+  subtotal?: number;
+  taxAmount?: number;
+  totalAmount?: number;
   status: InvoiceStatus;
-  totalAmount: number;
-  lineItems: InvoiceLineItem[];
-  fileUrl?: string;
-  fileName?: string;
-  ocrConfidence?: number;
-  notes?: string;
-  approvedBy?: string;
-  approvedAt?: string;
+  lineItems?: InvoiceLineItem[];
   createdAt: string;
-  updatedAt: string;
 }
 
-// ─── Flash Report Types ───────────────────────────────────────────────────────
+export type FlashReportStatus =
+  | "PENDING"
+  | "PROCESSING"
+  | "COMPLETED"
+  | "FAILED";
 
 export interface FlashReportCategory {
-  name: string;
-  sales: number;
-  transactions: number;
+  id: string;
+  categoryName: string;
+  salesAmount: number;
+  transactionCount?: number;
 }
 
 export interface FlashReport {
   id: string;
   storeId: string;
   reportDate: string;
-  totalSales: number;
-  fuelSales: number;
-  insideSales: number;
-  lotterySales: number;
-  tobaccoSales: number;
-  cashSales: number;
-  cardSales: number;
-  grossProfit: number;
-  grossMargin: number;
-  categories: FlashReportCategory[];
-  fileUrl?: string;
-  fileName?: string;
-  parseConfidence: number;
-  status: "PENDING" | "PARSED" | "REVIEWED" | "ERROR";
+  parseStatus: FlashReportStatus;
+  parseConfidence?: number;
+  totalSales?: number;
+  fuelSalesAmount?: number;
+  fuelGallons?: number;
+  insideSales?: number;
+  lotterySales?: number;
+  tobaccoSales?: number;
+  taxCollected?: number;
+  cashSales?: number;
+  cardSales?: number;
+  refunds?: number;
+  voids?: number;
+  transactionCount?: number;
+  categories?: FlashReportCategory[];
   createdAt: string;
-  updatedAt: string;
 }
 
-// ─── Alert Types ──────────────────────────────────────────────────────────────
-
-export type AlertSeverity = "INFO" | "WARNING" | "CRITICAL";
-export type AlertStatus = "ACTIVE" | "ACKNOWLEDGED" | "RESOLVED";
+export type AlertSeverity = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+export type AlertStatus = "OPEN" | "ACKNOWLEDGED" | "RESOLVED";
+export type AlertType =
+  | "LOW_STOCK"
+  | "SHRINKAGE"
+  | "INVOICE_DISCREPANCY"
+  | "UNUSUAL_REFUND"
+  | "CASH_SHORT"
+  | "FUEL_LOW"
+  | "PRICE_MARGIN_EROSION";
 
 export interface Alert {
   id: string;
+  orgId: string;
   storeId: string;
-  alertType:
-    | "LOW_STOCK"
-    | "OUT_OF_STOCK"
-    | "PRICE_ANOMALY"
-    | "SALES_DROP"
-    | "INVOICE_DUE"
-    | "FUEL_LOW"
-    | "SHRINK_DETECTED"
-    | "SYSTEM";
+  alertType: AlertType;
   severity: AlertSeverity;
-  status: AlertStatus;
   title: string;
   message: string;
-  metadata?: Record<string, unknown>;
+  status: AlertStatus;
   createdAt: string;
-  acknowledgedAt?: string;
-  resolvedAt?: string;
 }
-
-// ─── Dashboard Types ──────────────────────────────────────────────────────────
 
 export interface DashboardSummary {
   date: string;
   totalSales: number;
   fuelSales: number;
   insideSales: number;
-  netMargin: number;
-  totalTransactions: number;
-  averageTicket: number;
-  totalSalesChange: number;
-  fuelSalesChange: number;
-  insideSalesChange: number;
-  netMarginChange: number;
+  grossMargin: number;
+  grossMarginPct: number;
+  transactionCount: number;
+  avgTransactionValue: number;
+  cashSales: number;
+  cardSales: number;
+  refunds: number;
 }
 
-export interface SalesTrend {
+export interface SalesTrendPoint {
   date: string;
   totalSales: number;
   fuelSales: number;
   insideSales: number;
 }
 
-export interface CategoryBreakdown {
-  category: string;
-  sales: number;
-  percentage: number;
-  color: string;
-}
-
 export interface TopProduct {
-  rank: number;
   productId: string;
   productName: string;
-  upc: string;
   category: string;
+  totalRevenue: number;
   unitsSold: number;
-  revenue: number;
-  margin: number;
 }
 
-// ─── AI Assistant Types ───────────────────────────────────────────────────────
+export interface CategoryBreakdownItem {
+  category: string;
+  salesAmount: number;
+  pct: number;
+}
 
-export interface AIAssistantMessage {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  timestamp: string;
-  sources?: string[];
-  suggestedActions?: string[];
-  isLoading?: boolean;
+export interface ReorderRecommendation {
+  productId: string;
+  productName: string;
+  currentStock: number;
+  reorderPoint: number;
+  reorderQuantity: number;
+  vendorName?: string;
+  estimatedCost?: number;
+  urgency: "CRITICAL" | "HIGH" | "MEDIUM";
 }
 
 export interface AIAssistantResponse {
   answer: string;
-  sources: string[];
+  dataSources: string[];
   suggestedActions: string[];
   confidence: number;
-  queryId: string;
 }
 
-// ─── API Response Types ───────────────────────────────────────────────────────
-
-export interface PaginatedResponse<T> {
-  data: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
+export interface AuthTokens {
+  accessToken: string;
+  tokenType: string;
 }
-
-export interface ApiError {
-  message: string;
-  code: string;
-  details?: Record<string, unknown>;
-}
-
-// ─── Auth Types ───────────────────────────────────────────────────────────────
 
 export interface LoginRequest {
   email: string;
@@ -376,38 +263,9 @@ export interface LoginRequest {
 }
 
 export interface RegisterRequest {
+  orgName: string;
   email: string;
   password: string;
   firstName: string;
   lastName: string;
-  organizationName: string;
-}
-
-export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: User;
-}
-
-// ─── Reorder & Dead Stock Types ───────────────────────────────────────────────
-
-export interface ReorderRecommendation {
-  productId: string;
-  product: Product;
-  currentQuantity: number;
-  reorderPoint: number;
-  suggestedQuantity: number;
-  estimatedCost: number;
-  urgency: "HIGH" | "MEDIUM" | "LOW";
-  vendorName?: string;
-  lastOrderDate?: string;
-}
-
-export interface DeadStockItem {
-  productId: string;
-  product: Product;
-  quantityOnHand: number;
-  daysSinceLastSale: number;
-  estimatedValue: number;
-  recommendation: string;
 }
