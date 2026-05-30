@@ -13,7 +13,8 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# lib/ intentionally removed — Python venv lib dirs are covered by venv/ and .venv/ above
+# frontend/src/lib/ must NOT be ignored
 lib64/
 parts/
 sdist/
